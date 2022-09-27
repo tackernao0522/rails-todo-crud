@@ -1,7 +1,21 @@
 <h1>TOPページ</h1>
 
+<%= form_with model: @new_todo, url: create_path do |form| %>
+<%= form.label :title %>
+<%= form.text_field :title %>
+
+<%= form.label :comment %>
+<%= form.text_field :comment %>
+
+<%= form.label :limit %>
+<%= form.date_field :limit %>
+
+<%= form.submit %>
+<% end %>
+
 <% @todos.each do |todo| %>
 <ul>
+  <li>id<%= todo.id %>のデータ</li>
   <li><%= todo.title %></li>
   <li><%= todo.comment %></li>
   <li><%= todo.limit %></li>

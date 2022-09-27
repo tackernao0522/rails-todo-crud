@@ -1,5 +1,7 @@
 # 設計
 
++ [参考](https://qiita.com/hito_taro/items/4915ac9004046e26f23d) <br>
+
 #### 今回やるTodoアプリで実装するCRUDの処理は以下の通り
 
 + `Create` : Todoを作成する処理<br>
@@ -111,3 +113,92 @@ end
 <h1>----------</h1>
 <% end %>
 ```
+
+## 04. Crate処理の実装
+
+### Create用ルートの編集
+
++ `config/routes.rb`を編集<br>
+
+```rb:routes.rb
+Rails.application.routes.draw do
+  get '/todo', to: "todos#index", as: "top"
+  post '/todo', to: "todos#create", as: "create" # 追加
+end
+```
+
+```
+create  POST   /todo(.:format)    todo#create
+```
+
++ `app/controllers/todos_controller.rb`を編集<br>
+
+```rb:todos_controller.rb
+class TodosController < ApplicationController
+
+  def index
+    @todos = Todo.all()
+
+    # Viewのformで使う空のTodoインスタンスを作成します。
+    # Viewはこのインスタンスにユーザから入力された値を入れてControllerに渡します。
+    @new_todo = Todo.new # 追加
+  end
+
+  def create
+    # 追加
+  　# Viewからの入力を受け取りインスタンスを作成します。
+    @todo = Todo.new(todo_params)
+
+    # DBに値を追加した時の結果によるアクションを返します。
+    # 今回は成功しても失敗しても画面を更新するだけです。
+    respond_to do |format|
+      if @todo.save
+        format.html {redirect_to request.referer}
+      else
+        format.html {redirect_to request.referer}
+      end
+    end
+  end
+
+  private
+
+  # StrongParameterと言ってセキュリティに関係するメソッド
+  # todoモデル(:todo)で入力を許可するカラムを記載する。これ以外のデータは受付けないようになる。
+  def todo_params
+    params.require(:todo).permit(:title, :comment, :limit)
+  end
+  # ここまで
+end
+```
+
++ `app/views/todos/index.html.erb`を編集<br>
+
+```html:index.html.erb
+<h1>TOPページ</h1>
+
+<!-- todos_controller.rbで定義した空のインスタンスに値を格納しcreate_pathにPOSTします。 -->
+<%= form_with model: @new_todo, url: create_path do |form| %>
+<%= form.label :title %>
+<%= form.text_field :title %>
+
+<%= form.label :comment %>
+<%= form.text_field :comment %>
+
+<%= form.label :limit %>
+<%= form.date_field :limit %>
+
+<%= form.submit %>
+<% end %>
+
+<% @todos.each do |todo| %>
+<ul>
+  <li><%= todo.title %></li>
+  <li><%= todo.comment %></li>
+  <li><%= todo.limit %></li>
+</ul>
+
+<h1>----------</h1>
+<% end %>
+```
+
++ http://localhost:3000/todo にアクセスしてテストしてみる <br>
