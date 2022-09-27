@@ -19,6 +19,8 @@
   <li><%= todo.title %></li>
   <li><%= todo.comment %></li>
   <li><%= todo.limit %></li>
+
+  <%= link_to "更新", update_path(id: todo.id), method: :patch %>
 </ul>
 
 <h1>----------</h1>
