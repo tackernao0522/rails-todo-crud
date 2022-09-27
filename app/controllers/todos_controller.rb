@@ -18,6 +18,20 @@ class TodosController < ApplicationController
     end
   end
 
+  def update
+    @update_todo = Todo.find(params[:id])
+
+    @update_todo.comment = "完了"
+
+    respond_to do |format|
+      if @update_todo.save
+        format.html {redirect_to request.referer}
+      else
+        format.html {redirect_to request.referer}
+      end
+    end
+  end
+
   private
 
   def todo_params

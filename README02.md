@@ -123,12 +123,12 @@ end
 ```rb:routes.rb
 Rails.application.routes.draw do
   get '/todo', to: "todos#index", as: "top"
-  post '/todo', to: "todos#create", as: "create" # 追加
+  post '/todo/create', to: "todos#create", as: "create" # 追加
 end
 ```
 
 ```
-create  POST   /todo(.:format)    todo#create
+create  POST   /todo/create(.:format)    todos#create
 ```
 
 + `app/controllers/todos_controller.rb`を編集<br>
@@ -202,3 +202,107 @@ end
 ```
 
 + http://localhost:3000/todo にアクセスしてテストしてみる <br>
+
+## 06. Updateの実装
+
+### Update用ルートの編集
+
++ `config/routes.rb`を編集<br>
+
+```rb:routes.rb
+Rails.application.routes.draw do
+  get '/todo', to: "todos#index", as: "top"
+  post '/todo/create', to: "todos#create", as: "create"
+  patch '/todo/update', to: "todos#update", as: "update" # 追加
+end
+```
+
+```
+update PATCH  /todo/update(.:format)  todos#update
+```
+
+## Controllerでupdateメソッドを作成
+
++ `app/controllers/todos_controller.rb`を編集<br>
+
+```rb:todos_controller.rb
+class TodosController < ApplicationController
+
+  def index
+    @todos = Todo.all()
+
+    @new_todo = Todo.new
+  end
+
+  def create
+    @todo = Todo.new(todo_params)
+
+    respond_to do |format|
+      if @todo.save
+        format.html {redirect_to request.referer}
+      else
+        format.html {redirect_to request.referer}
+      end
+    end
+  end
+
+  def update
+    # todosテーブルから受け取ったIDと一致するインスタンス(行)を取得
+    @update_todo = Todo.find_by(params[:id])
+
+    # 取得したインスタンスのcomment(取得した行のcommentカラム)に"完了"を格納
+    @update_todo.comment = "完了"
+
+    # 実行した時の処理を記載(createと同じ)
+    respond_to do |format|
+      if @todo.save
+        format.html {redirect_to request.referer}
+      else
+        format.html {redirect_to request.referer}
+      end
+    end
+  end
+
+  private
+
+  def todo_params
+    params.require(:todo).permit(:title, :comment, :limit)
+  end
+end
+```
+
+## Update用にViewを編集
+
++ `app/views/todos/index.html.erb`を編集
+
+```html:index.html.erb
+<h1>TOPページ</h1>
+
+<%= form_with model: @new_todo, url: create_path do |form| %>
+<%= form.label :title %>
+<%= form.text_field :title %>
+
+<%= form.label :comment %>
+<%= form.text_field :comment %>
+
+<%= form.label :limit %>
+<%= form.date_field :limit %>
+
+<%= form.submit %>
+<% end %>
+
+<% @todos.each do |todo| %>
+<ul>
+  <li>id<%= todo.id %>のデータ</li>
+  <li><%= todo.title %></li>
+  <li><%= todo.comment %></li>
+  <li><%= todo.limit %></li>
+
+   <!-- 追加 -->
+   <!-- 以下の1行を追加してリンクを表示 -->
+  <%= link_to "更新", update_path(id: todo.id), method: :patch %>
+</ul>
+
+<h1>----------</h1>
+<% end %>
+```
