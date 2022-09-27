@@ -82,3 +82,32 @@ end
 ```
 
 + `$ rails db:seed`を実行<br>
+
+## DBからデータを取得する
+
++ `app/controllers/todos_controller.rb`を編集<br>
+
+```rb:todos_controller.rb
+class TodosController < ApplicationController
+
+  def index
+    @todos = Todo.all() # 追加
+  end
+end
+```
+
+## index.html.erbに取得したデータを表示させる
+
+```app/views/todos/index.html.erb
+<h1>TOPページ</h1>
+
+<% @todos.each do |todo| %>
+<ul>
+  <li><%= todo.title %></li>
+  <li><%= todo.comment %></li>
+  <li><%= todo.limit %></li>
+</ul>
+
+<h1>----------</h1>
+<% end %>
+```
