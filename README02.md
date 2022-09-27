@@ -19,3 +19,41 @@
 + `U` : Todo内脳の変更 => UPDATE文<br>
 
 + `D` : Todoの削除 => DELETE文<br>
+
+## Viewの作成
+
+### index.html.erbの作成
+
++ `$ rails g controller todos`を実行<br>
+
++ `$ touch app/views/todos/index.html.erb`を実行<br>
+
++ `app/views/todos/index.html.erb`を編集<br>
+
+```html:index.html.erb
+<h1>TOPページ</h1>
+```
+
++ `app/controllers/todos_controller.rb`を編集<br>
+
+```rb:todos_controller.rb
+class TodosController < ApplicationController
+
+  def index
+
+  end
+end
+```
+
++ `config/routes.rb`を編集<br>
+
+```rb:routes.rb
+Rails.application.routes.draw do
+  get '/todo', to: "todos#index", as: "top"
+end
+```
+
+```
+Prefix Verb   URI Pattern          Controller#Action
+top    GET    /todo(.:format)      todos#index
+```
