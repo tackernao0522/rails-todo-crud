@@ -21,6 +21,7 @@
   <li><%= todo.limit %></li>
 
   <%= link_to "更新", update_path(id: todo.id), method: :patch %>
+  <%= link_to "削除", delete_path(id: todo.id), method: :delete %>
 </ul>
 
 <h1>----------</h1>

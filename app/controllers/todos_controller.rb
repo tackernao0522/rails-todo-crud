@@ -32,6 +32,18 @@ class TodosController < ApplicationController
     end
   end
 
+  def delete
+    @delete_todo = Todo.find(params[:id])
+
+    respond_to do |format|
+      if @delete_todo.destroy
+        format.html {redirect_to request.referer}
+      else
+        format.html {redirect_to request.referer}
+      end
+    end
+  end
+
   private
 
   def todo_params

@@ -2,6 +2,7 @@
                                      top GET    /todo(.:format)                                                                                   todos#index
                                   create POST   /todo/create(.:format)                                                                            todos#create
                                   update PATCH  /todo/update(.:format)                                                                            todos#update
+                                  delete DELETE /todo/delete(.:format)                                                                            todos#delete
            rails_postmark_inbound_emails POST   /rails/action_mailbox/postmark/inbound_emails(.:format)                                           action_mailbox/ingresses/postmark/inbound_emails#create
               rails_relay_inbound_emails POST   /rails/action_mailbox/relay/inbound_emails(.:format)                                              action_mailbox/ingresses/relay/inbound_emails#create
            rails_sendgrid_inbound_emails POST   /rails/action_mailbox/sendgrid/inbound_emails(.:format)                                           action_mailbox/ingresses/sendgrid/inbound_emails#create
