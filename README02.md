@@ -57,3 +57,28 @@ end
 Prefix Verb   URI Pattern          Controller#Action
 top    GET    /todo(.:format)      todos#index
 ```
+
+## Read処理の実装
+
+### Modelの作成
+
++ `$ rails g model todo title:string comment:string limit:date`を実行<br>
+
++ `$ rails db:migrate`を実行<br>
+
+### ダミーデータの作成
+
++ `db/seeds.rb`を編集<br>
+
+```rb:seeds.rb
+titles = %w(test1 test2 test3 test4 test5)
+0.upto(4) do |idx|
+  Todo.create(
+    title: titles[idx],
+    comment: "test-#{titles[idx]}",
+    limit: "2022-12-24"
+  )
+end
+```
+
++ `$ rails db:seed`を実行<br>
