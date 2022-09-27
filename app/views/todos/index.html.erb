@@ -1,1 +1,11 @@
 <h1>TOPページ</h1>
+
+<% @todos.each do |todo| %>
+<ul>
+  <li><%= todo.title %></li>
+  <li><%= todo.comment %></li>
+  <li><%= todo.limit %></li>
+</ul>
+
+<h1>----------</h1>
+<% end %>
