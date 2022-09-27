@@ -306,3 +306,118 @@ end
 <h1>----------</h1>
 <% end %>
 ```
+
+## Deleteの実装
+
+## Delete用ルートの編集
+
++ `config/routes.rb`を編集<br>
+
+```rb:routes.rb
+Rails.application.routes.draw do
+  get '/todo', to: "todos#index", as: "top"
+  post '/todo/create', to: "todos#create", as: "create"
+  patch '/todo/update', to: "todos#update", as: "update"
+  delete '/todo/delete', to: "todos#delete", as: "delete" # 追加
+end
+```
+
+```
+delete DELETE /todo/delete(.:format)         todos#delete
+```
+
+## Controllerでupdateメソッドを作成
+
++ `app/controllers/todos_controller.rb`を編集<br>
+
+```rb:todos_controller.rb
+class TodosController < ApplicationController
+
+  def index
+    @todos = Todo.all()
+
+    @new_todo = Todo.new
+  end
+
+  def create
+    @todo = Todo.new(todo_params)
+
+    respond_to do |format|
+      if @todo.save
+        format.html {redirect_to request.referer}
+      else
+        format.html {redirect_to request.referer}
+      end
+    end
+  end
+
+  def update
+    @update_todo = Todo.find(params[:id])
+
+    @update_todo.comment = "完了"
+
+    respond_to do |format|
+      if @update_todo.save
+        format.html {redirect_to request.referer}
+      else
+        format.html {redirect_to request.referer}
+      end
+    end
+  end
+
+  def delete
+    # todosテーブルから受け取ったIDと一致するインスタンス(行)を取得
+    @delete_todo = Todo.find(params[:id])
+
+    # 削除の実行と実行した時の処理を記載
+    respond_to do |format|
+      if @delete_todo.destroy
+        format.html {redirect_to request.referer}
+      else
+        format.html {redirect_to request.referer}
+      end
+    end
+  end
+
+  private
+
+  def todo_params
+    params.require(:todo).permit(:title, :comment, :limit)
+  end
+end
+```
+
+## Delete用にViewを編集
+
++ `app/views/todos/index.html.erb`を編集<br>
+
+```html:index.html.erb
+<h1>TOPページ</h1>
+
+<%= form_with model: @new_todo, url: create_path do |form| %>
+<%= form.label :title %>
+<%= form.text_field :title %>
+
+<%= form.label :comment %>
+<%= form.text_field :comment %>
+
+<%= form.label :limit %>
+<%= form.date_field :limit %>
+
+<%= form.submit %>
+<% end %>
+
+<% @todos.each do |todo| %>
+<ul>
+  <li>id<%= todo.id %>のデータ</li>
+  <li><%= todo.title %></li>
+  <li><%= todo.comment %></li>
+  <li><%= todo.limit %></li>
+
+  <%= link_to "更新", update_path(id: todo.id), method: :patch %>
+  <%= link_to "削除", delete_path(id: todo.id), method: :delete %> <!-- 追加 -->
+</ul>
+
+<h1>----------</h1>
+<% end %>
+```
